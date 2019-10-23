@@ -1,16 +1,17 @@
 import java.util.InputMismatchException;
 import java.util.LinkedList;
 import java.util.Scanner;
+import java.util.Iterator;
 
-public class Project1 
+public class Main
 {
-	public String assignmentTitle = null;
-	public int dueDate = 0;
+	public static String title = null;
+	public static int due = 0;
 	public static boolean exit = false;
 	public static char userInputChar;
 	public static int userInputInt;
 	public static String userInputString;
-	public static LinkedList<Project1> assignment = new LinkedList<Project1>();
+	public static LinkedList<Main> assignment = new LinkedList<Main>();
 	
 	public static void main (String[]args)
 	{
@@ -32,7 +33,7 @@ public class Project1
 					break;
 					
 				case 'L':
-					//listAssignments();
+          				listAssignments();
 					break;
 					
 				case 'P':
@@ -50,11 +51,19 @@ public class Project1
 		}
 	}
 	
-	public Project1 (String title, int due)
+	public Main()
 	{
-		assignmentTitle = title;
-		dueDate = due;
+    //default assignment
+		title = "nothing";
+		due = 0;
 	}
+
+  public Main(String title, int due)
+  {
+    this.title = title;
+    this.due = due;
+  }
+
 	
 	public static void addAssignment ()
 	{
@@ -68,7 +77,7 @@ public class Project1
 			try
 			{
 				userInputInt = in.nextInt();
-				if (userInputInt < 1 || userInputInt > 99991231)
+				if (userInputInt < 20190101 || userInputInt > 99991231)
 				{
 					System.out.println("Invalid Input \nMust be in YYYYMMDD format");
 					valid = false;
@@ -82,10 +91,23 @@ public class Project1
 				System.out.println("Invalid Input \nMust be in YYYYMMDD format");
 			}
 		}
-		Project1 temp = new Project1(userInputString, userInputInt); 
+		Main temp = new Main(userInputString, userInputInt); 
 		assignment.add(temp);
 	}
+
+  public void listAssignments()
+  {
+    for (Iterator i = assignment.iterator(); i.hasNext();) 
+    {
+      i.next();
+      System.out.println(Main.printer());
+    }
+  }
 	
+  public static String printer() 
+  {
+    return title + " due on " + due;
+  }
 	public static void quitProgram()
 	{
 		System.out.println("Goodbye");
