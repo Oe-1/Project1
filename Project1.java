@@ -3,15 +3,16 @@ import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.Iterator;
 
-public class Main
+public class Project1
 {
-	public static String title = null;
-	public static int due = 0;
+	public String title = null;
+	public int due = 20190101;
+  	public static int earliestDue = 99991232;
 	public static boolean exit = false;
 	public static char userInputChar;
 	public static int userInputInt;
 	public static String userInputString;
-	public static LinkedList<Main> assignment = new LinkedList<Main>();
+	public static LinkedList<Project1> assignment = new LinkedList<Project1>();
 	
 	public static void main (String[]args)
 	{
@@ -29,7 +30,15 @@ public class Main
 					break;
 					
 				case 'R':
-					//removeAssignment();
+                	System.out.println("Enter the number associated with the assignment you wish to delete.");
+					listAssignments();
+                	removeAssignment();
+                	System.out.println("Here is the new list of assignments:");
+                	if (assignment.size() < 1)
+                    	System.out.println("The list is empty\n");
+                	else
+                    	listAssignments();
+                	
 					break;
 					
 				case 'L':
@@ -37,7 +46,7 @@ public class Main
 					break;
 					
 				case 'P':
-					//printAssignment();
+					printAssignments();
 					break;
 					
 				case 'Q':
@@ -51,21 +60,48 @@ public class Main
 		}
 	}
 	
-	public Main()
+	public Project1()
 	{
-    //default assignment
-		title = "nothing";
-		due = 0;
+		title = "Test Assignment";
+		due = 20190101;
 	}
 
-  public Main(String title, int due)
-  {
-    this.title = title;
-    this.due = due;
-  }
+  	public Project1(String title, int due)
+  	{
+    	this.title = title;
+    	this.due = due;
+  	}
+  
+  	public static void removeAssignment()
+    {
+      Scanner in = new Scanner(System.in);
+      boolean valid = false;
+      while (valid == false)
+      {
+        try
+        {
+          userInputInt = in.nextInt();
+          if (userInputInt > assignment.size() - 1 || userInputInt < 0)
+          {
+            System.out.println("Invalid Input \nEnter the number associated with the assignment you wish to delete.");
+            valid = false;
+          }
+          else
+            valid = true;
+        }
+        
+        catch (InputMismatchException e)
+        {
+          in.next();
+          System.out.println("Invalid Input \nEnter the number associated with the assignment you wish to delete.");
+        }
+      }
+      assignment.remove(userInputInt);
+      System.out.println();
+    }
 
 	
-	public static void addAssignment ()
+	public static void addAssignment()
 	{
 		Scanner in = new Scanner(System.in);
 		System.out.println("\nEnter the assignment name");
@@ -91,22 +127,54 @@ public class Main
 				System.out.println("Invalid Input \nMust be in YYYYMMDD format");
 			}
 		}
-		Main temp = new Main(userInputString, userInputInt); 
-		assignment.add(temp);
+		assignment.add(new Project1(userInputString, userInputInt));
+      	if (userInputInt <= earliestDue)
+        	earliestDue = userInputInt;
 	}
 
-  public void listAssignments()
+  public static void listAssignments()
   {
-    for (Iterator i = assignment.iterator(); i.hasNext();) 
+    Iterator<Project1> iterator = assignment.iterator();
+    int i = 0;
+    while(iterator.hasNext())
     {
-      i.next();
-      System.out.println(Main.printer());
+    	System.out.print(i + ". ");
+    	System.out.println(printer(iterator.next()));
+      	i++;
+    }
+    System.out.println();
+  }
+  
+    public static void printAssignments()
+  {
+    Iterator<Project1> iterator = assignment.iterator();
+    if (assignment.size() == 0)
+    {
+      System.out.println("The assignment list is empty.\n");
+    }
+      
+    else
+    {
+      while(iterator.hasNext())
+      {
+        if (dueCheck(iterator.next()) == earliestDue)
+        {
+        	System.out.println("The earliest due assignment is:");
+        	System.out.println(printer(iterator));
+        }
+      }
+      System.out.println();
     }
   }
-	
-  public static String printer() 
+
+  public static int dueCheck(Project1 i)
   {
-    return title + " due on " + due;
+    return i.due;
+  }
+  
+  public static String printer(Project1 i) 
+  {
+    return i.title + " due on " + i.due;
   }
 	public static void quitProgram()
 	{
